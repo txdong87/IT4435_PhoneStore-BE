@@ -1,25 +1,21 @@
-# Sử dụng image node phiên bản 16 làm base image
+# sử dụng một image của node.js có sẵn trên Docker Hub
 FROM node:16-alpine
 
-# Đặt working directory trong container
+# tạo một thư mục để lưu trữ các file trong container
 WORKDIR /app
 
-# Copy toàn bộ nội dung từ thư mục hiện tại vào thư mục /app trong container
-COPY . /app
+# copy tất cả các file từ thư mục gốc của dự án vào thư mục /app trên container
+COPY . .
 
-# Di chuyển vào thư mục client
+# chuyển sang thư mục client và cài đặt các package
 WORKDIR /app/client
-
-# Install dependencies cho phần front-end
 RUN npm install
 
+RUN npm run build
 
 
+# expose port 3000
+EXPOSE 3000
+
+# khi container được khởi chạy, sẽ chạy lệnh npm start trong thư mục client
 CMD ["npm", "start"]
-
-
-
-
-
-
-
