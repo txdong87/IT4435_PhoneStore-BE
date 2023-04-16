@@ -9,13 +9,11 @@ COPY . .
 
 # chuyển sang thư mục client và cài đặt các package
 WORKDIR /app/client
+
+
 RUN npm install
-
-RUN npm run build
-
 
 # expose port 3000
 EXPOSE 3000
-
 # khi container được khởi chạy, sẽ chạy lệnh npm start trong thư mục client
-CMD ["npm", "start"]
+CMD ["npm", "run", "dev"]
