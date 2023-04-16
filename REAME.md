@@ -6,7 +6,7 @@ Cách chạy dự án :
 
 - Các bạn pull dự án từ docker về với lệnh sau : 
 
-   docker pull nvtunghust/phonestore
+   docker pull nvtunghust/phonestore:v1
 
 - Sau đó chạy dự án bằng lệnh :
 
