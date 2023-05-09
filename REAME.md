@@ -6,15 +6,10 @@ Cách chạy dự án :
 
 - Các bạn pull dự án từ docker về với lệnh sau : 
 
-   docker pull nvtunghust/phonestore
+   docker pull nvtunghust/phonestore:v1
 
-- Sau đó chạy dự án bằng lệnh :
 
-  docker run nvtunghust/phonestore:v1 
-
-- Sau đó các bạn vào truy cập vào http://localhost:3000/ để xem trang web
-
-- Ở đây mình đã để sẵn dự án sẽ chạy ở cổng 3000, nếu không muốn các bạn có thể chạy dự án bằng câu lệnh (bỏ dấu []) : 
+- Để chạy dự án : 
   
   docker run -p [port_các_bạn_chọn]:3000 nvtunghust/phonestore:v1 
 
