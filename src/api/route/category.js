@@ -13,14 +13,17 @@ import connection from '../../db/connect.js';
 const router = express.Router();
 
 const JWT_SECRET = '';
-router.post('/add',(req,res) => {
-    let category=req.body
-    query=`INSERT INTO category (name) values (?)`;
-    connection.query(query, (err, results) => {
-        if (err) return callRes(res, responseError.UNKNOWN_ERROR, null);
-        return callRes(res, responseError.OK, results);
+router.post('/add', (req, res, next) => {
+    var category = req.body; 
+    var query = "INSERT INTO category (name) values (?)";
+    console.log(category);
+    connection.query(query,[category.name], (err, results) => {
+      console.log(11, results);
+      if (!results) return callRes(res, responseError.UNKNOWN_ERROR, null);
+      return callRes(res, responseError.OK);
     });
-})
+  });
+  
 router.get('/get',(req,res)=>{
     var query=`select * from category order by name`;
     connection.query(query, (err, results) => {
