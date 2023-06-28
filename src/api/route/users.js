@@ -47,10 +47,10 @@ router.post('/signup', async (req, res) => {
 
 //API đăng nhập
 router.post('/login', async (req, res) => {
-    const { username, password, uuid } = req.body;
+    const { username, password } = req.body;
     
-    if(!username  || !password || !uuid) return callRes(res, responseError.PARAMETER_IS_NOT_ENOUGH, null);
-    if(typeof username != 'string' || typeof password != 'string' || typeof uuid != 'string'){
+    if(!username  || !password ) return callRes(res, responseError.PARAMETER_IS_NOT_ENOUGH, null);
+    if(typeof username != 'string' || typeof password != 'string' ){
         return callRes(res, responseError.PARAMETER_TYPE_IS_INVALID,null);
     }
     
@@ -66,7 +66,7 @@ router.post('/login', async (req, res) => {
                     {
                         username: results[0].username,
                         userId: results[0].id,
-                        uuid: uuid // uuid: 50-81-40-85-D1-9C
+                      
                     },
                     JWT_SECRET
                 );
