@@ -28,13 +28,32 @@ CREATE TABLE product(
 )
 CREATE TABLE bill(
   id int not null AUTO_INCREMENT,
-  uuid varchar(255) not null,
   name varchar(255) not null,
   email varchar(255) not null,
   total int not null,
   productDetails JSON default null,
   PRIMARY KEY(id)
 )
+CREATE TABLE HoaDonBan (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  tenKhachHang VARCHAR(255) NOT NULL,
+  SDT VARCHAR(20) NOT NULL,
+  diaChi VARCHAR(255) NOT NULL,
+  ngay DATE NOT NULL,
+  thoiGianBaoHanh INT,
+  description TEXT
+);
+
+CREATE TABLE SanPham (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  hoaDonBanId INT,
+  tenSanPham VARCHAR(255) NOT NULL,
+  soLuong INT NOT NULL,
+  donGia DECIMAL(10,2) NOT NULL,
+  tongTien DECIMAL(10,2) NOT NULL,
+  FOREIGN KEY (hoaDonBanId) REFERENCES HoaDonBan(id)
+);
+
 INSERT INTO users (username, password, role, is_block)
 VALUES ('user1', '1', 'user', 0);
 
