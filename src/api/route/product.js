@@ -15,8 +15,9 @@ const router = express.Router();
 const JWT_SECRET = '';
 router.post('/add',(req,res) => {
     let product=req.body
-    query=`INSERT INTO product (name,categoryId,description,price,status) values (?,?,?,?,'true')`;
-    connection.query(query,[product.name,product.categoryId,product.description,product.price], (err, results) => {
+    let query=`INSERT INTO product (name,categoryId,description,price,image,sold,quantity,status) values (?,?,?,?,?,?,?,'true')`;
+    connection.query(query,[product.name,product.categoryId,product.description,product.price,product.image,product.sold,product.quantity], (err, results) => {
+        console.log(err)
         if (err) return callRes(res, responseError.UNKNOWN_ERROR, null);
         return callRes(res, responseError.OK, results);
     });
