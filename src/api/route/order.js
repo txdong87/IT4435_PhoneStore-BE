@@ -13,7 +13,7 @@ import connection from '../../db/connect.js';
 const router = express.Router();
 
 const JWT_SECRET = '';
-router.get('/hoa-don/:id', (req, res) => {
+router.get('/get/:id', (req, res) => {
     const hoaDonId = req.params.id;
   
     connection.query(
@@ -39,8 +39,10 @@ router.get('/hoa-don/:id', (req, res) => {
                 res.status(500).json({ error: 'Lỗi truy vấn cơ sở dữ liệu' });
                 return;
               }
-  
+              console.log(query)
               hoaDon.sanPham = sanPhamResults;
+              console.log(sanPhamResults)
+              console.log(hoaDonResults)
               res.json(hoaDon);
             }
           );
@@ -50,7 +52,7 @@ router.get('/hoa-don/:id', (req, res) => {
   });
   
   // API DELETE: Xóa hóa đơn bán theo ID
-  router.delete('/hoa-don/:id', (req, res) => {
+  router.delete('/delete/:id', (req, res) => {
     const hoaDonId = req.params.id;
   
     connection.query(
