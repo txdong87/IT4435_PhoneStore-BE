@@ -23,7 +23,7 @@ router.post('/add',(req,res) => {
     });
 })
 router.get('/get',(req,res)=>{
-    var query =`select p.id,p.name,p.description,p.image,p.price,p.status,c.name as categoryName from product as p INNER JOIN category as c where p.categoryId=c.id`;
+    var query =`select p.id,p.name,p.description,p.image,p.price,p.quantity,p.sold,p.status,c.name as categoryName from product as p INNER JOIN category as c where p.categoryId=c.id`;
     connection.query(query, (err, results) => {
         if (err) return callRes(res, responseError.UNKNOWN_ERROR, null);
         return callRes(res, responseError.OK, results);
@@ -31,7 +31,7 @@ router.get('/get',(req,res)=>{
 })
 router.get('/getByCategory/:id',(req,res)=>{
     const id=req.params.id;
-    var query =`select id,name from product where categoryId=? and status ='true'`;
+    var query =`select id,name,description,image,price,quantity,sold,status from product where categoryId=? and status ='true'`;
      connection.query(query,[id], (err, results) => {
         console.log(results)
         if (err) return callRes(res, responseError.UNKNOWN_ERROR, null);
@@ -40,7 +40,7 @@ router.get('/getByCategory/:id',(req,res)=>{
 })
 router.get('/getById/:id',(req,res,next)=>{
     const id =req.params.id;
-    var query =`select id,name,description,image,price from product where id=?`
+    var query =`select id,name,description,image,price,quantity,sold,status from product where id=?`
     connection.query(query,[id], (err, results) => {
         if (err) return callRes(res, responseError.UNKNOWN_ERROR, null);
         return callRes(res, responseError.OK, results);
@@ -48,8 +48,8 @@ router.get('/getById/:id',(req,res,next)=>{
 })
 router.patch('/update',(req,res)=>{
     let product=req.body;
-    var query =`update product set name=?,categoryId=?,description=?,price=? where id=?`
-    connection.query(query,[product.name,product.categoryId,product.description,product.image,product.price], (err, results) => {
+    var query =`update product set name=?,categoryId=?,description=?,image=?,sold=?,quantity=?,price=? where id=?`
+    connection.query(query,[product.name,product.categoryId,product.description,product.image,product.sold,product.quantity,product.price,product.id], (err, results) => {
         if (err) return callRes(res, responseError.UNKNOWN_ERROR, null);
         return callRes(res, responseError.OK, results);
     });
