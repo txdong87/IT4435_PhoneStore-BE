@@ -93,7 +93,6 @@ router.get('/get/:id', (req, res) => {
     
     connection.query(query, [tenKhachHang, SDT, diaChi, ngay, thoiGianBaoHanh, description], (error, insertHoaDonResults) => {
       if (error) {
-        console.log(insertHoaDonResults)
         console.error('Lỗi truy vấn cơ sở dữ liệu: ', error);
         res.status(500).json({ error: 'Lỗi truy vấn cơ sở dữ liệu' });
         return;
@@ -102,14 +101,14 @@ router.get('/get/:id', (req, res) => {
       const hoaDonId = insertHoaDonResults.insertId;
       const sanPhamValues = sanPham.map((item) => [
         hoaDonId,
-        item.tenSanPham,
+        item.idSanPham,
         item.soLuong,
         item.donGia,
         item.soLuong * item.donGia,
       ]);
   
       connection.query(
-        'INSERT INTO SanPham (hoaDonBanId, tenSanPham, soLuong, donGia, tongTien) VALUES ?',
+        'INSERT INTO SanPham (hoaDonBanId, productId, soLuong, donGia, tongTien) VALUES ?',
         [sanPhamValues],
         (error, insertSanPhamResults) => {
           if (error) {
@@ -118,10 +117,24 @@ router.get('/get/:id', (req, res) => {
             return;
           }
   
+          // Cập nhật trường 'sold' và giảm trường 'quantity' trong bảng 'product'
+          const updateProductQuery = 'UPDATE product SET sold = sold + ?, quantity = quantity - ? WHERE id = ?';
+          sanPham.forEach((item) => {
+            console.log(item)
+            connection.query(updateProductQuery, [item.soLuong, item.soLuong, item.idSanPham], (error) => {
+              if (error) {
+                console.error('Lỗi truy vấn cơ sở dữ liệu: ', error);
+                res.status(500).json({ error: 'Lỗi truy vấn cơ sở dữ liệu' });
+                return;
+              }
+            });
+          });
+  
           res.json({ message: 'Thêm hóa đơn bán thành công' });
         }
       );
     });
   });
+  
   
   export { router };
