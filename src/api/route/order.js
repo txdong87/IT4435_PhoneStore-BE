@@ -30,8 +30,8 @@ router.get("/get/:id", (req, res) => {
         res.status(404).json({ error: "Không tìm thấy hóa đơn bán" });
       } else {
         const hoaDon = hoaDonResults[0];
-        connection.query(
-          "SELECT * FROM SanPham WHERE hoaDonBanId = ?",
+        connection.query("SELECT sp.*, p.name AS tenSanPham FROM SanPham sp JOIN product p ON sp.productId = p.id WHERE hoaDonBanId = ?",
+          // "SELECT * FROM SanPham WHERE hoaDonBanId = ?",
           [hoaDonId],
           (error, sanPhamResults) => {
             if (error) {
