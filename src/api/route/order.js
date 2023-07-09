@@ -31,7 +31,7 @@ router.get("/get/:id", (req, res) => {
       } else {
         const hoaDon = hoaDonResults[0];
         connection.query("SELECT sp.*, p.name AS tenSanPham FROM SanPham sp JOIN product p ON sp.productId = p.id WHERE hoaDonBanId = ?",
-          // "SELECT * FROM SanPham WHERE hoaDonBanId = ?",
+          // "SELECT * FROM SanPham WHERE hoaDonBanId = ?aaa",
           [hoaDonId],
           (error, sanPhamResults) => {
             if (error) {
