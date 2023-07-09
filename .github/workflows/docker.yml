@@ -24,4 +24,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: txdong87/PhoneStoreBE
+          tags: txdong87/phonestorebe
