@@ -87,72 +87,6 @@ router.delete("/delete/:id", (req, res) => {
 });
 
 // API POST: Thêm hóa đơn bán mới
-router.post("/add", (req, res) => {
-  const {
-    tenKhachHang,
-    SDT,
-    diaChi,
-    sanPham,
-    ngay,
-    thoiGianBaoHanh,
-    description,
-  } = req.body;
-  const query =
-    "INSERT INTO HoaDonBan (tenKhachHang, SDT, diaChi, ngay, thoiGianBaoHanh, description) VALUES (?, ?, ?, ?, ?, ?)";
-
-  connection.query(
-    query,
-    [tenKhachHang, SDT, diaChi, ngay, thoiGianBaoHanh, description],
-    (error, insertHoaDonResults) => {
-      if (error) {
-        console.error("Lỗi truy vấn cơ sở dữ liệu: ", error);
-        res.status(500).json({ error: "Lỗi truy vấn cơ sở dữ liệu" });
-        return;
-      }
-
-      const hoaDonId = insertHoaDonResults.insertId;
-      const sanPhamValues = sanPham.map((item) => [
-        hoaDonId,
-        item.idSanPham,
-        item.soLuong,
-        item.donGia,
-        item.soLuong * item.donGia,
-      ]);
-
-      connection.query(
-        "INSERT INTO SanPham (hoaDonBanId, productId, soLuong, donGia, tongTien) VALUES ?",
-        [sanPhamValues],
-        (error, insertSanPhamResults) => {
-          if (error) {
-            console.error("Lỗi truy vấn cơ sở dữ liệu: ", error);
-            res.status(500).json({ error: "Lỗi truy vấn cơ sở dữ liệu" });
-            return;
-          }
-
-          // Cập nhật trường 'sold' và giảm trường 'quantity' trong bảng 'product'
-          const updateProductQuery =
-            "UPDATE product SET sold = sold + ?, quantity = quantity - ? WHERE id = ?";
-          sanPham.forEach((item) => {
-            console.log(item);
-            connection.query(
-              updateProductQuery,
-              [item.soLuong, item.soLuong, item.idSanPham],
-              (error) => {
-                if (error) {
-                  console.error("Lỗi truy vấn cơ sở dữ liệu: ", error);
-                  res.status(500).json({ error: "Lỗi truy vấn cơ sở dữ liệu" });
-                  return;
-                }
-              }
-            );
-          });
-
-          res.json({ message: "Thêm hóa đơn bán thành công" });
-        }
-      );
-    }
-  );
-});
 
 router.get("/get", (req, res) => {
   connection.query("SELECT * FROM HoaDonBan", (error, hoaDonResults) => {
@@ -189,6 +123,74 @@ router.get("/get", (req, res) => {
         res.status(500).json({ error: "Lỗi truy vấn cơ sở dữ liệu" });
       });
   });
+});
+
+router.post("/add", (req, res) => {
+  const {
+    tenKhachHang,
+    SDT,
+    diaChi,
+    sanPham,
+    ngay,
+    thoiGianBaoHanh,
+    description,
+  } = req.body;
+  const query =
+    "INSERT INTO HoaDonBan (tenKhachHang, SDT, diaChi, ngay, thoiGianBaoHanh, description) VALUES (?, ?, ?, ?, ?, ?)";
+
+  connection.query(
+    query,
+    [tenKhachHang, SDT, diaChi, ngay, thoiGianBaoHanh, description],
+    (error, insertHoaDonResults) => {
+      if (error) {
+        console.log(insertHoaDonResults);
+        console.error("Lỗi truy vấn cơ sở dữ liệu: ", error);
+        res.status(500).json({ error: "Lỗi truy vấn cơ sở dữ liệu" });
+        return;
+      }
+
+      const hoaDonId = insertHoaDonResults.insertId;
+      const sanPhamValues = sanPham.map((item) => [
+        hoaDonId,
+        item.productId,
+        item.soLuong,
+        item.donGia,
+        item.soLuong * item.donGia,
+      ]);
+
+      connection.query(
+        "INSERT INTO SanPham (hoaDonBanId, productId, soLuong, donGia, tongTien) VALUES ?",
+        [sanPhamValues],
+        (error, insertSanPhamResults) => {
+          if (error) {
+            console.error("Lỗi truy vấn cơ sở dữ liệu: ", error);
+            res.status(500).json({ error: "Lỗi truy vấn cơ sở dữ liệu" });
+            return;
+          }
+
+          // Cập nhật trường 'sold' và giảm trường 'quantity' trong bảng 'product'
+          const updateProductQuery =
+            "UPDATE product SET sold = sold + ?, quantity = quantity - ? WHERE id = ?";
+          sanPham.forEach((item) => {
+            console.log(item);
+            connection.query(
+              updateProductQuery,
+              [item.soLuong, item.soLuong, item.productId],
+              (error) => {
+                if (error) {
+                  console.error("Lỗi truy vấn cơ sở dữ liệu: ", error);
+                  res.status(500).json({ error: "Lỗi truy vấn cơ sở dữ liệu" });
+                  return;
+                }
+              }
+            );
+          });
+
+          res.json({ message: "Thêm hóa đơn bán thành công" });
+        }
+      );
+    }
+  );
 });
 
 export { router };
